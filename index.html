@@ -530,6 +530,107 @@
       .adm-wrap { grid-template-columns: 1fr; }
       .add-form { grid-template-columns: 1fr 1fr; }
     }
+
+    /* -------- ADMIN LOGIN -------- */
+    #view-login {
+      min-height: 100vh;
+      background: #0F172A;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .login-card {
+      background: white;
+      border-radius: 16px;
+      padding: 36px 32px;
+      width: 100%;
+      max-width: 360px;
+    }
+
+    .login-icon {
+      width: 48px; height: 48px;
+      background: #1D4ED8;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .login-title { font-size: 22px; font-weight: 700; color: #0F172A; margin-bottom: 4px; }
+    .login-sub   { font-size: 13px; color: #9CA3AF; margin-bottom: 28px; }
+
+    .login-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 6px;
+    }
+
+    .login-input {
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 15px;
+      border: 1.5px solid #E5E7EB;
+      border-radius: 10px;
+      background: white;
+      color: #0F172A;
+      outline: none;
+      font-family: inherit;
+      margin-bottom: 14px;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      box-sizing: border-box;
+    }
+
+    .login-input:focus {
+      border-color: #1D4ED8;
+      box-shadow: 0 0 0 3px rgba(29,78,216,0.08);
+    }
+
+    .login-btn {
+      display: block;
+      width: 100%;
+      padding: 13px;
+      background: #1D4ED8;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.15s;
+    }
+
+    .login-btn:hover  { background: #1E40AF; }
+    .login-btn:active { transform: scale(0.98); }
+
+    .login-err {
+      margin-top: 12px;
+      padding: 10px 14px;
+      background: #FEF2F2;
+      border-radius: 8px;
+      font-size: 13px;
+      color: #DC2626;
+      border-left: 3px solid #DC2626;
+      display: none;
+    }
+
+    .logout-btn {
+      padding: 6px 14px;
+      background: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.7);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .logout-btn:hover { background: rgba(255,255,255,0.15); }
   </style>
 </head>
 <body>
@@ -606,6 +707,27 @@
 </div>
 
 <!-- ================================================================
+  ADMIN LOGIN VIEW
+================================================================ -->
+<div id="view-login" class="hidden">
+  <div class="login-card">
+    <div class="login-icon">🔒</div>
+    <h1 class="login-title">Admin login</h1>
+    <p class="login-sub">This area is restricted to administrators only.</p>
+    <label class="login-label" for="adm-user">Username</label>
+    <input type="text" id="adm-user" class="login-input" placeholder="Enter username"
+      autocomplete="username" autocorrect="off" autocapitalize="none"
+      onkeydown="if(event.key==='Enter') adminLogin()" />
+    <label class="login-label" for="adm-pass">Password</label>
+    <input type="password" id="adm-pass" class="login-input" placeholder="Enter password"
+      autocomplete="current-password"
+      onkeydown="if(event.key==='Enter') adminLogin()" />
+    <button class="login-btn" onclick="adminLogin()">Sign in to Admin Panel</button>
+    <div class="login-err" id="login-err">Incorrect username or password.</div>
+  </div>
+</div>
+
+<!-- ================================================================
   ADMIN VIEW
 ================================================================ -->
 <div id="view-admin" class="hidden">
@@ -615,7 +737,7 @@
       <span class="brand-name" id="admin-co-name">Company</span>
       <span class="brand-badge">Admin</span>
     </div>
-    <span class="adm-clock" id="adm-clk"></span>
+    <div style="display:flex;align-items:center;gap:14px"><span class="adm-clock" id="adm-clk"></span><button class="logout-btn" onclick="adminLogout()">Sign out</button></div>
   </div>
 
   <div class="adm-wrap">
@@ -667,6 +789,8 @@
    ================================================================= */
 const COMPANY_NAME  = 'Zanooch';
 const FIREBASE_URL  = 'https://zanooch-default-rtdb.firebaseio.com';
+const ADMIN_USER    = 'admin';       // Change this to your username
+const ADMIN_PASS    = 'zanooch123'; // Change this to your password
 
 /*
   HOW TO GET YOUR FIREBASE URL (free, takes ~5 min)
@@ -728,7 +852,7 @@ const nD = () => fd(new Date());
 const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 
 function showView(id) {
-  ['view-portal','view-loading','view-success','view-admin','view-setup']
+  ['view-portal','view-loading','view-success','view-admin','view-setup','view-login']
     .forEach(v => $(v).classList.toggle('hidden', v !== id));
 }
 
@@ -750,7 +874,12 @@ function route() {
   }
 
   if (window.location.hash === '#admin') {
-    initAdmin();
+    if (sessionStorage.getItem('adm_auth') === 'ok') {
+      initAdmin();
+    } else {
+      showView('view-login');
+      setTimeout(() => { const u=$('adm-user'); if(u) u.focus(); }, 100);
+    }
   } else {
     showView('view-portal');
     setTimeout(() => { const i=$('eid-input'); if(i) i.focus(); }, 100);
@@ -759,6 +888,36 @@ function route() {
 
 window.addEventListener('hashchange', route);
 window.addEventListener('DOMContentLoaded', route);
+
+
+/* =================================================================
+   ADMIN AUTH
+   ================================================================= */
+function adminLogin() {
+  const user = ($('adm-user').value || '').trim();
+  const pass = ($('adm-pass').value || '').trim();
+  const err  = $('login-err');
+
+  if (user === ADMIN_USER && pass === ADMIN_PASS) {
+    sessionStorage.setItem('adm_auth', 'ok');
+    $('adm-pass').value = '';
+    $('adm-user').value = '';
+    err.style.display = 'none';
+    initAdmin();
+  } else {
+    err.style.display = 'block';
+    $('adm-pass').value = '';
+    $('adm-pass').focus();
+  }
+}
+
+function adminLogout() {
+  sessionStorage.removeItem('adm_auth');
+  clearInterval(ST.pollTimer);
+  window.location.hash = '';
+  showView('view-portal');
+  setTimeout(() => { const i=$('eid-input'); if(i) i.focus(); }, 100);
+}
 
 /* =================================================================
    PORTAL — Employee check-in / check-out
