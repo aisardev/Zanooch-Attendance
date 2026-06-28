@@ -19,205 +19,337 @@
     /* -------- PORTAL (employee phone view) -------- */
     #view-portal {
       min-height: 100vh;
-      background: white;
+      background: linear-gradient(160deg, #0F172A 0%, #1E3A8A 55%, #2563EB 100%);
       display: flex;
       flex-direction: column;
+      position: relative;
+      overflow: hidden;
     }
 
-    .p-header {
-      padding: 20px 24px 16px;
-      border-bottom: 1px solid #F3F4F6;
+    #view-portal::before {
+      content: '';
+      position: absolute;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(99,102,241,0.18) 0%, transparent 70%);
+      top: -180px; right: -150px;
+      pointer-events: none;
+    }
+
+    #view-portal::after {
+      content: '';
+      position: absolute;
+      width: 340px; height: 340px;
+      background: radial-gradient(circle, rgba(16,185,129,0.1) 0%, transparent 70%);
+      bottom: 160px; left: -100px;
+      pointer-events: none;
+    }
+
+    .p-top {
+      padding: 52px 28px 28px;
       text-align: center;
+      position: relative;
+      z-index: 1;
     }
 
-    .co-name {
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 2.5px;
-      color: #9CA3AF;
+    .p-brand-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 100px;
+      padding: 6px 16px 6px 8px;
+      margin-bottom: 36px;
+    }
+
+    .p-brand-dot {
+      width: 24px; height: 24px;
+      background: #3B82F6;
+      border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 800; color: white;
+    }
+
+    .p-brand-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.9);
+      letter-spacing: 1.5px;
       text-transform: uppercase;
     }
 
-    .p-body {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 40px 24px;
+    .p-clock {
+      font-size: 68px;
+      font-weight: 800;
+      color: white;
+      letter-spacing: -3px;
+      line-height: 1;
+      margin-bottom: 10px;
+      font-variant-numeric: tabular-nums;
     }
 
-    .p-form { width: 100%; max-width: 340px; }
+    .p-ampm {
+      font-size: 24px;
+      font-weight: 500;
+      letter-spacing: 0;
+      opacity: 0.7;
+      margin-left: 4px;
+    }
 
-    .p-title {
-      font-size: 27px;
+    .p-date-line {
+      font-size: 14px;
+      color: rgba(255,255,255,0.45);
+      letter-spacing: 0.5px;
+    }
+
+    .p-card-wrap {
+      flex: 1;
+      display: flex;
+      align-items: flex-end;
+      position: relative;
+      z-index: 1;
+    }
+
+    .p-card {
+      background: white;
+      border-radius: 28px 28px 0 0;
+      padding: 30px 28px 36px;
+      width: 100%;
+      box-shadow: 0 -12px 48px rgba(0,0,0,0.25);
+    }
+
+    .p-card-eyebrow {
+      font-size: 11px;
       font-weight: 700;
-      color: #0F172A;
+      color: #9CA3AF;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
       margin-bottom: 6px;
     }
 
-    .p-sub {
-      font-size: 14px;
-      color: #6B7280;
-      margin-bottom: 30px;
+    .p-card-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: #0F172A;
+      margin-bottom: 22px;
     }
 
-    .f-label {
-      display: block;
-      font-size: 13px;
-      font-weight: 600;
-      color: #374151;
-      margin-bottom: 8px;
+    .f-wrap { position: relative; }
+
+    .f-badge {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 20px;
+      pointer-events: none;
     }
 
     .f-input {
       width: 100%;
-      padding: 15px 16px;
-      font-size: 22px;
+      padding: 15px 16px 15px 48px;
+      font-size: 20px;
       font-weight: 700;
       letter-spacing: 4px;
       text-transform: uppercase;
       border: 2px solid #E5E7EB;
-      border-radius: 12px;
-      background: white;
+      border-radius: 14px;
+      background: #F8FAFF;
       color: #0F172A;
       outline: none;
       font-family: inherit;
-      transition: border-color 0.15s, box-shadow 0.15s;
+      box-sizing: border-box;
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
     }
 
     .f-input::placeholder {
-      font-size: 16px;
+      font-size: 15px;
       letter-spacing: 1px;
-      color: #D1D5DB;
+      color: #CBD5E1;
       font-weight: 400;
     }
 
     .f-input:focus {
-      border-color: #1D4ED8;
-      box-shadow: 0 0 0 4px rgba(29,78,216,0.08);
+      border-color: #2563EB;
+      background: white;
+      box-shadow: 0 0 0 4px rgba(37,99,235,0.1);
     }
 
     .emp-preview {
       margin-top: 12px;
-      padding: 12px 15px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
       background: #EFF6FF;
-      border-radius: 10px;
-      border-left: 3px solid #1D4ED8;
+      border: 1.5px solid #BFDBFE;
     }
 
-    .ep-name { font-size: 15px; font-weight: 700; color: #1E3A8A; }
-    .ep-meta { font-size: 12px; color: #3B82F6; margin-top: 3px; }
+    .ep-avatar {
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #1D4ED8, #7C3AED);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; font-weight: 700; color: white;
+      flex-shrink: 0;
+      letter-spacing: 0;
+    }
+
+    .ep-info { flex: 1; min-width: 0; }
+    .ep-name { font-size: 14px; font-weight: 700; color: #1E3A8A; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .ep-meta { font-size: 12px; color: #60A5FA; margin-top: 2px; }
+
+    .ep-badge {
+      font-size: 10px; font-weight: 700;
+      padding: 3px 10px; border-radius: 20px;
+      flex-shrink: 0;
+    }
+
+    .ep-badge-in  { background: #DCFCE7; color: #166534; }
+    .ep-badge-out { background: #FEF9C3; color: #854D0E; }
 
     .err-box {
       margin-top: 12px;
-      padding: 11px 14px;
+      padding: 12px 14px;
       background: #FEF2F2;
-      border-radius: 10px;
+      border-radius: 12px;
       font-size: 13px;
       color: #DC2626;
-      border-left: 3px solid #DC2626;
+      border: 1.5px solid #FECACA;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     .big-btn {
       display: block;
       width: 100%;
       margin-top: 16px;
-      padding: 16px;
+      padding: 17px;
       border: none;
-      border-radius: 12px;
+      border-radius: 14px;
       font-size: 16px;
       font-weight: 700;
       cursor: pointer;
       font-family: inherit;
-      transition: opacity 0.15s, transform 0.1s;
+      transition: opacity 0.15s, transform 0.1s, box-shadow 0.15s;
       letter-spacing: 0.3px;
     }
 
-    .big-btn:active { transform: scale(0.98); opacity: 0.9; }
-    .btn-blue  { background: #1D4ED8; color: white; }
-    .btn-green { background: #059669; color: white; }
-    .btn-red   { background: #DC2626; color: white; }
-    .btn-gray  { background: #F3F4F6; color: #374151; }
+    .big-btn:hover  { opacity: 0.93; }
+    .big-btn:active { transform: scale(0.98); }
 
-    .p-footer {
-      padding: 16px;
+    .btn-blue  { background: linear-gradient(135deg, #1D4ED8, #2563EB); color: white; box-shadow: 0 4px 14px rgba(37,99,235,0.35); }
+    .btn-green { background: linear-gradient(135deg, #059669, #10B981); color: white; box-shadow: 0 4px 14px rgba(5,150,105,0.35); }
+    .btn-red   { background: linear-gradient(135deg, #DC2626, #EF4444); color: white; box-shadow: 0 4px 14px rgba(220,38,38,0.35); }
+    .btn-gray  { background: #F3F4F6; color: #374151; box-shadow: none; }
+
+    .p-admin-link {
+      display: block;
       text-align: center;
-      border-top: 1px solid #F3F4F6;
-    }
-
-    .admin-link {
+      margin-top: 20px;
       font-size: 12px;
-      color: #D1D5DB;
+      color: #CBD5E1;
       text-decoration: none;
+      letter-spacing: 0.3px;
     }
 
-    .admin-link:hover { color: #9CA3AF; }
+    .p-admin-link:hover { color: #94A3B8; }
 
     /* -------- LOADING -------- */
     #view-loading {
       min-height: 100vh;
-      background: white;
+      background: linear-gradient(160deg, #0F172A 0%, #1E3A8A 55%, #2563EB 100%);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 16px;
+      gap: 18px;
     }
 
     .spinner {
-      width: 40px; height: 40px;
-      border: 3px solid #E5E7EB;
-      border-top-color: #1D4ED8;
+      width: 44px; height: 44px;
+      border: 3px solid rgba(255,255,255,0.15);
+      border-top-color: white;
       border-radius: 50%;
       animation: spin 0.7s linear infinite;
     }
 
     @keyframes spin { to { transform: rotate(360deg); } }
-    .load-txt { font-size: 14px; color: #9CA3AF; }
+    .load-txt { font-size: 14px; color: rgba(255,255,255,0.5); }
 
     /* -------- SUCCESS -------- */
     #view-success {
       min-height: 100vh;
-      background: white;
       display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 32px 24px;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
     }
 
-    .succ-inner { width: 100%; max-width: 320px; }
+    .succ-bg {
+      position: absolute;
+      inset: 0;
+      transition: background 0.3s;
+    }
 
-    .succ-ring {
-      width: 84px; height: 84px;
+    .succ-bg-in  { background: linear-gradient(160deg, #064E3B 0%, #059669 50%, #34D399 100%); }
+    .succ-bg-out { background: linear-gradient(160deg, #7F1D1D 0%, #DC2626 50%, #F87171 100%); }
+
+    .succ-top {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 28px 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .succ-icon-ring {
+      width: 90px; height: 90px;
       border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 42px;
-      margin: 0 auto 20px;
+      background: rgba(255,255,255,0.15);
+      border: 2px solid rgba(255,255,255,0.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 44px;
+      margin-bottom: 20px;
     }
 
-    .ring-in  { background: #ECFDF5; }
-    .ring-out { background: #FEF2F2; }
+    .succ-big-title {
+      font-size: 32px;
+      font-weight: 800;
+      color: white;
+      margin-bottom: 6px;
+      text-align: center;
+    }
 
-    .succ-h1  { font-size: 28px; font-weight: 700; margin-bottom: 6px; }
-    .succ-nm  { font-size: 16px; color: #374151; margin-bottom: 4px; }
-    .succ-sub { font-size: 13px; color: #9CA3AF; margin-bottom: 24px; }
+    .succ-big-name {
+      font-size: 16px;
+      color: rgba(255,255,255,0.75);
+      text-align: center;
+    }
 
-    .succ-card {
-      background: #F9FAFB;
-      border-radius: 12px;
-      padding: 14px 16px;
-      margin-bottom: 18px;
-      text-align: left;
+    .succ-card-wrap {
+      position: relative;
+      z-index: 1;
+    }
+
+    .succ-inner {
+      background: white;
+      border-radius: 28px 28px 0 0;
+      padding: 28px 28px 36px;
+      box-shadow: 0 -12px 48px rgba(0,0,0,0.2);
     }
 
     .s-row {
       display: flex;
       justify-content: space-between;
-      font-size: 13px;
-      padding: 6px 0;
+      align-items: center;
+      font-size: 14px;
+      padding: 11px 0;
       border-bottom: 1px solid #F3F4F6;
     }
 
@@ -225,7 +357,15 @@
     .s-key { color: #9CA3AF; }
     .s-val { font-weight: 600; color: #111827; }
 
-    .auto-note { font-size: 12px; color: #D1D5DB; margin-top: 12px; }
+    .succ-card {
+      background: #F8FAFF;
+      border-radius: 14px;
+      padding: 4px 16px;
+      margin-bottom: 20px;
+      border: 1px solid #E5E7EB;
+    }
+
+    .auto-note { font-size: 12px; color: #9CA3AF; text-align: center; margin-top: 12px; }
 
     /* -------- NOT CONFIGURED -------- */
     #view-setup {
@@ -659,27 +799,48 @@
   PORTAL VIEW (employee phone — opens when QR is scanned)
 ================================================================ -->
 <div id="view-portal" class="hidden">
-  <div class="p-header">
-    <div class="co-name" id="portal-co-name">Company</div>
-  </div>
-  <div class="p-body">
-    <div class="p-form">
-      <h1 class="p-title">Hello 👋</h1>
-      <p class="p-sub">Enter your employee ID to check in or out</p>
-      <label class="f-label" for="eid-input">Employee ID</label>
-      <input type="text" id="eid-input" class="f-input" placeholder="EMP001"
-        autocomplete="off" autocorrect="off" autocapitalize="characters"
-        maxlength="12" oninput="onIdType(this.value)" />
-      <div id="emp-preview" class="emp-preview hidden">
-        <div class="ep-name" id="ep-name"></div>
-        <div class="ep-meta" id="ep-meta"></div>
-      </div>
-      <div id="emp-err" class="err-box hidden"></div>
-      <button id="go-btn" class="big-btn btn-blue" onclick="submitAction()">Continue</button>
+  <!-- Top: branding + live clock -->
+  <div class="p-top">
+    <div class="p-brand-pill">
+      <div class="p-brand-dot" id="portal-brand-initial">Z</div>
+      <span class="p-brand-name" id="portal-co-name">Company</span>
     </div>
+    <div class="p-clock" id="portal-clock">
+      <span id="portal-hhmm">09:30</span><span class="p-ampm" id="portal-ampm">AM</span>
+    </div>
+    <div class="p-date-line" id="portal-date">Monday, June 28, 2026</div>
   </div>
-  <div class="p-footer">
-    <a href="#admin" class="admin-link">Admin panel →</a>
+
+  <!-- Bottom: white card with form -->
+  <div class="p-card-wrap">
+    <div class="p-card">
+      <p class="p-card-eyebrow">Attendance</p>
+      <h1 class="p-card-title">Check in or out</h1>
+
+      <div class="f-wrap">
+        <span class="f-badge">🪪</span>
+        <input type="text" id="eid-input" class="f-input" placeholder="Enter ID"
+          autocomplete="off" autocorrect="off" autocapitalize="characters"
+          maxlength="12" oninput="onIdType(this.value)" />
+      </div>
+
+      <div id="emp-preview" class="emp-preview hidden">
+        <div class="ep-avatar" id="ep-avatar"></div>
+        <div class="ep-info">
+          <div class="ep-name" id="ep-name"></div>
+          <div class="ep-meta" id="ep-meta"></div>
+        </div>
+        <span class="ep-badge" id="ep-badge"></span>
+      </div>
+
+      <div id="emp-err" class="err-box hidden">
+        <span>⚠️</span><span id="emp-err-txt"></span>
+      </div>
+
+      <button id="go-btn" class="big-btn btn-blue" onclick="submitAction()">Continue</button>
+
+      <a href="#admin" class="p-admin-link">Admin panel →</a>
+    </div>
   </div>
 </div>
 
@@ -688,21 +849,25 @@
 ================================================================ -->
 <div id="view-loading" class="hidden">
   <div class="spinner"></div>
-  <p class="load-txt">Please wait...</p>
+  <p class="load-txt">Processing...</p>
 </div>
 
 <!-- ================================================================
   SUCCESS VIEW (shown after check-in or check-out)
 ================================================================ -->
 <div id="view-success" class="hidden">
-  <div class="succ-inner">
-    <div class="succ-ring" id="succ-ring"></div>
-    <h1 class="succ-h1" id="succ-h1"></h1>
-    <p class="succ-nm" id="succ-nm"></p>
-    <p class="succ-sub" id="succ-sub"></p>
-    <div class="succ-card" id="succ-card"></div>
-    <button class="big-btn btn-gray" style="margin-top:0" onclick="resetPortal()">Done</button>
-    <p class="auto-note">Resets in <span id="countdown">8</span>s</p>
+  <div class="succ-bg" id="succ-bg"></div>
+  <div class="succ-top">
+    <div class="succ-icon-ring" id="succ-ring"></div>
+    <h1 class="succ-big-title" id="succ-h1"></h1>
+    <p class="succ-big-name" id="succ-nm"></p>
+  </div>
+  <div class="succ-card-wrap">
+    <div class="succ-inner">
+      <div class="succ-card" id="succ-card"></div>
+      <button class="big-btn btn-blue" style="margin-top:0" onclick="resetPortal()">Done</button>
+      <p class="auto-note">Screen resets in <span id="countdown">8</span>s</p>
+    </div>
   </div>
 </div>
 
@@ -865,8 +1030,10 @@ function isConfigured() {
    ================================================================= */
 function route() {
   document.title = COMPANY_NAME + ' — Attendance';
-  $('portal-co-name').textContent = COMPANY_NAME;
-  $('admin-co-name').textContent  = COMPANY_NAME;
+  $('portal-co-name').textContent  = COMPANY_NAME;
+  $('admin-co-name').textContent   = COMPANY_NAME;
+  const bi = $('portal-brand-initial');
+  if (bi) bi.textContent = COMPANY_NAME.charAt(0).toUpperCase();
 
   if (!isConfigured()) {
     showView('view-setup');
@@ -882,8 +1049,28 @@ function route() {
     }
   } else {
     showView('view-portal');
+    startPortalClock();
     setTimeout(() => { const i=$('eid-input'); if(i) i.focus(); }, 100);
   }
+}
+
+function startPortalClock() {
+  function tick() {
+    const now = new Date();
+    let h = now.getHours();
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    h = h % 12 || 12;
+    const m = String(now.getMinutes()).padStart(2,'0');
+    const hhmm = $('portal-hhmm');
+    const ap   = $('portal-ampm');
+    const dt   = $('portal-date');
+    if (hhmm) hhmm.textContent = h + ':' + m;
+    if (ap)   ap.textContent   = ampm;
+    if (dt)   dt.textContent   = fd(now);
+  }
+  tick();
+  clearInterval(window._portalClockTimer);
+  window._portalClockTimer = setInterval(tick, 1000);
 }
 
 window.addEventListener('hashchange', route);
@@ -928,8 +1115,8 @@ function onIdType(val) {
   clearTimeout(idTimer);
   $('emp-preview').classList.add('hidden');
   $('emp-err').classList.add('hidden');
-  $('go-btn').className = 'big-btn btn-blue';
-  $('go-btn').textContent = 'Continue';
+  $('go-btn').className   = 'big-btn btn-blue';
+  $('go-btn').textContent  = 'Continue';
 
   const id = val.trim().toUpperCase();
   if (id.length < 3) return;
@@ -943,18 +1130,23 @@ async function previewEmployee(id) {
     if (!emp) return;
 
     const session = await fbGet('att/sessions/' + id);
-    $('ep-name').textContent = '👤 ' + emp.name;
-    const preview = $('emp-preview');
-    preview.classList.remove('hidden');
+    const initials = emp.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+    $('ep-avatar').textContent = initials;
+    $('ep-name').textContent   = emp.name;
+    $('emp-preview').classList.remove('hidden');
 
     if (session) {
-      $('ep-meta').textContent = emp.dept + ' · Checked in at ' + session.time;
-      $('go-btn').textContent  = 'Check out — ' + emp.name;
-      $('go-btn').className    = 'big-btn btn-red';
+      $('ep-meta').textContent    = emp.dept + ' · In since ' + session.time;
+      $('ep-badge').textContent   = 'IN';
+      $('ep-badge').className     = 'ep-badge ep-badge-in';
+      $('go-btn').textContent     = 'Check Out';
+      $('go-btn').className       = 'big-btn btn-red';
     } else {
-      $('ep-meta').textContent = emp.dept + ' · Not checked in';
-      $('go-btn').textContent  = 'Check in — ' + emp.name;
-      $('go-btn').className    = 'big-btn btn-green';
+      $('ep-meta').textContent    = emp.dept + ' · Not checked in';
+      $('ep-badge').textContent   = 'OUT';
+      $('ep-badge').className     = 'ep-badge ep-badge-out';
+      $('go-btn').textContent     = 'Check In';
+      $('go-btn').className       = 'big-btn btn-green';
     }
   } catch(e) { /* silent — just don't preview */ }
 }
@@ -1004,7 +1196,7 @@ async function submitAction() {
 
 function showPortalErr(msg) {
   const el = $('emp-err');
-  el.textContent = msg;
+  $('emp-err-txt').textContent = msg;
   el.classList.remove('hidden');
 }
 
@@ -1047,6 +1239,7 @@ function resetPortal() {
   $('emp-err').classList.add('hidden');
   $('go-btn').className = 'big-btn btn-blue';
   $('go-btn').textContent = 'Continue';
+  if($('ep-avatar')) $('ep-avatar').textContent = '';
   showView('view-portal');
   setTimeout(() => { const i=$('eid-input'); if(i) i.focus(); }, 100);
 }
