@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+  <title id="page-title">Employee Attendance</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: #F9FAFB;
+      color: #111827;
+      min-height: 100vh;
+    }
+
+    .hidden { display: none !important; }
+
+    /* -------- PORTAL (employee phone view) -------- */
+    #view-portal {
+      min-height: 100vh;
+      background: white;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .p-header {
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid #F3F4F6;
+      text-align: center;
+    }
+
+    .co-name {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      color: #9CA3AF;
+      text-transform: uppercase;
+    }
+
+    .p-body {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 24px;
+    }
+
+    .p-form { width: 100%; max-width: 340px; }
+
+    .p-title {
+      font-size: 27px;
+      font-weight: 700;
+      color: #0F172A;
+      margin-bottom: 6px;
+    }
+
+    .p-sub {
+      font-size: 14px;
+      color: #6B7280;
+      margin-bottom: 30px;
+    }
+
+    .f-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 8px;
+    }
+
+    .f-input {
+      width: 100%;
+      padding: 15px 16px;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      border: 2px solid #E5E7EB;
+      border-radius: 12px;
+      background: white;
+      color: #0F172A;
+      outline: none;
+      font-family: inherit;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .f-input::placeholder {
+      font-size: 16px;
+      letter-spacing: 1px;
+      color: #D1D5DB;
+      font-weight: 400;
+    }
+
+    .f-input:focus {
+      border-color: #1D4ED8;
+      box-shadow: 0 0 0 4px rgba(29,78,216,0.08);
+    }
+
+    .emp-preview {
+      margin-top: 12px;
+      padding: 12px 15px;
+      background: #EFF6FF;
+      border-radius: 10px;
+      border-left: 3px solid #1D4ED8;
+    }
+
+    .ep-name { font-size: 15px; font-weight: 700; color: #1E3A8A; }
+    .ep-meta { font-size: 12px; color: #3B82F6; margin-top: 3px; }
+
+    .err-box {
+      margin-top: 12px;
+      padding: 11px 14px;
+      background: #FEF2F2;
+      border-radius: 10px;
+      font-size: 13px;
+      color: #DC2626;
+      border-left: 3px solid #DC2626;
+    }
+
+    .big-btn {
+      display: block;
+      width: 100%;
+      margin-top: 16px;
+      padding: 16px;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: opacity 0.15s, transform 0.1s;
+      letter-spacing: 0.3px;
+    }
+
+    .big-btn:active { transform: scale(0.98); opacity: 0.9; }
+    .btn-blue  { background: #1D4ED8; color: white; }
+    .btn-green { background: #059669; color: white; }
+    .btn-red   { background: #DC2626; color: white; }
+    .btn-gray  { background: #F3F4F6; color: #374151; }
+
+    .p-footer {
+      padding: 16px;
+      text-align: center;
+      border-top: 1px solid #F3F4F6;
+    }
+
+    .admin-link {
+      font-size: 12px;
+      color: #D1D5DB;
+      text-decoration: none;
+    }
+
+    .admin-link:hover { color: #9CA3AF; }
+
+    /* -------- LOADING -------- */
+    #view-loading {
+      min-height: 100vh;
+      background: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    .spinner {
+      width: 40px; height: 40px;
+      border: 3px solid #E5E7EB;
+      border-top-color: #1D4ED8;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .load-txt { font-size: 14px; color: #9CA3AF; }
+
+    /* -------- SUCCESS -------- */
+    #view-success {
+      min-height: 100vh;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 32px 24px;
+    }
+
+    .succ-inner { width: 100%; max-width: 320px; }
+
+    .succ-ring {
+      width: 84px; height: 84px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 42px;
+      margin: 0 auto 20px;
+    }
+
+    .ring-in  { background: #ECFDF5; }
+    .ring-out { background: #FEF2F2; }
+
+    .succ-h1  { font-size: 28px; font-weight: 700; margin-bottom: 6px; }
+    .succ-nm  { font-size: 16px; color: #374151; margin-bottom: 4px; }
+    .succ-sub { font-size: 13px; color: #9CA3AF; margin-bottom: 24px; }
+
+    .succ-card {
+      background: #F9FAFB;
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 18px;
+      text-align: left;
+    }
+
+    .s-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      padding: 6px 0;
+      border-bottom: 1px solid #F3F4F6;
+    }
+
+    .s-row:last-child { border: none; }
+    .s-key { color: #9CA3AF; }
+    .s-val { font-weight: 600; color: #111827; }
+
+    .auto-note { font-size: 12px; color: #D1D5DB; margin-top: 12px; }
+
+    /* -------- NOT CONFIGURED -------- */
+    #view-setup {
+      min-height: 100vh;
+      background: #FFF7ED;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 24px;
+    }
+
+    .setup-inner {
+      max-width: 480px;
+      width: 100%;
+      background: white;
+      border-radius: 16px;
+      padding: 32px;
+      border: 1px solid #FED7AA;
+    }
+
+    .setup-tag {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: #EA580C;
+      margin-bottom: 10px;
+    }
+
+    .setup-h { font-size: 22px; font-weight: 700; color: #0F172A; margin-bottom: 8px; }
+    .setup-p { font-size: 14px; color: #6B7280; margin-bottom: 20px; line-height: 1.6; }
+
+    .setup-steps { list-style: none; counter-reset: steps; }
+
+    .setup-steps li {
+      counter-increment: steps;
+      display: flex;
+      gap: 12px;
+      margin-bottom: 14px;
+      font-size: 14px;
+      color: #374151;
+      line-height: 1.5;
+    }
+
+    .setup-steps li::before {
+      content: counter(steps);
+      min-width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #EA580C;
+      color: white;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .setup-steps code {
+      background: #F3F4F6;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-family: monospace;
+    }
+
+    .setup-link {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: #EA580C;
+      color: white;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    /* -------- ADMIN PANEL -------- */
+    #view-admin { background: #EEF2FF; min-height: 100vh; }
+
+    .adm-bar {
+      background: #0F172A;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .adm-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-icon {
+      width: 32px; height: 32px;
+      background: #1D4ED8;
+      border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; font-weight: 800; color: white;
+    }
+
+    .brand-name { font-size: 15px; font-weight: 700; color: white; }
+
+    .brand-badge {
+      font-size: 10px;
+      background: rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.5);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .adm-clock { font-size: 12px; color: rgba(255,255,255,0.4); }
+
+    .adm-wrap {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 20px;
+      display: grid;
+      grid-template-columns: 286px 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .adm-card {
+      background: white;
+      border-radius: 12px;
+      border: 1px solid #E5E7EB;
+      overflow: hidden;
+    }
+
+    /* QR panel */
+    .qr-panel { padding: 18px; text-align: center; }
+    .qr-label { font-size: 11px; font-weight: 600; color: #9CA3AF; letter-spacing: 1.5px; margin-bottom: 14px; }
+    .qr-frame {
+      display: inline-block;
+      padding: 10px;
+      background: white;
+      border: 1px solid #E5E7EB;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .qr-url-chip {
+      display: inline-block;
+      font-size: 11px;
+      color: #6B7280;
+      font-family: monospace;
+      background: #F3F4F6;
+      padding: 4px 10px;
+      border-radius: 4px;
+      margin-top: 10px;
+      word-break: break-all;
+    }
+
+    .qr-hint { font-size: 11px; color: #9CA3AF; margin-top: 8px; }
+
+    .portal-btn-link {
+      display: block;
+      margin-top: 12px;
+      padding: 9px 14px;
+      background: #EFF6FF;
+      color: #1D4ED8;
+      border: 1px solid #BFDBFE;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      text-align: center;
+    }
+
+    .portal-btn-link:hover { background: #DBEAFE; }
+
+    /* Stats */
+    .stat-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+
+    .stat-box { border-radius: 10px; padding: 14px; text-align: center; }
+    .stat-n { font-size: 30px; font-weight: 700; }
+    .stat-l { font-size: 11px; margin-top: 2px; }
+
+    .s-green { background: #ECFDF5; }
+    .s-green .stat-n { color: #059669; }
+    .s-green .stat-l { color: #047857; }
+
+    .s-blue { background: #EFF6FF; }
+    .s-blue .stat-n { color: #1D4ED8; }
+    .s-blue .stat-l { color: #1E40AF; }
+
+    .refresh-note { font-size: 11px; color: #9CA3AF; text-align: center; margin-top: 8px; }
+
+    /* Tabs */
+    .tab-nav { display: flex; border-bottom: 1px solid #E5E7EB; }
+
+    .t-btn {
+      padding: 12px 16px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #6B7280;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      font-family: inherit;
+      transition: color 0.1s;
+    }
+
+    .t-btn.on { color: #1D4ED8; border-bottom-color: #1D4ED8; }
+    .t-btn:hover:not(.on) { color: #374151; }
+
+    .t-body { padding: 14px; }
+
+    /* Table */
+    .tbl { width: 100%; border-collapse: collapse; }
+    .tbl th {
+      text-align: left;
+      font-size: 11px;
+      font-weight: 600;
+      color: #9CA3AF;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      padding: 0 0 9px;
+      border-bottom: 1px solid #F3F4F6;
+    }
+    .tbl td {
+      padding: 10px 0;
+      font-size: 13px;
+      border-bottom: 1px solid #F9FAFB;
+      color: #374151;
+    }
+    .tbl td:first-child { font-weight: 600; color: #111827; }
+
+    .bdg {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 20px;
+      letter-spacing: 0.5px;
+    }
+
+    .b-in  { background: #ECFDF5; color: #059669; }
+    .b-out { background: #FEF2F2; color: #DC2626; }
+    .b-off { background: #F3F4F6; color: #9CA3AF; }
+
+    .empty-state { text-align: center; padding: 40px 0; color: #9CA3AF; font-size: 13px; }
+
+    /* Add employee form */
+    .add-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .add-bar h3 { font-size: 14px; font-weight: 600; color: #111827; }
+
+    .add-form {
+      display: none;
+      grid-template-columns: 0.7fr 1.5fr 0.8fr auto;
+      gap: 8px;
+      margin-bottom: 14px;
+      padding: 12px;
+      background: #F9FAFB;
+      border-radius: 8px;
+      border: 1px solid #E5E7EB;
+      align-items: center;
+    }
+
+    .mi {
+      padding: 8px 10px;
+      border: 1px solid #E5E7EB;
+      border-radius: 6px;
+      font-size: 13px;
+      color: #111827;
+      font-family: inherit;
+      outline: none;
+      background: white;
+      width: 100%;
+    }
+
+    .mi:focus { border-color: #1D4ED8; }
+
+    .sm-btn {
+      padding: 8px 14px;
+      border: none;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      white-space: nowrap;
+    }
+
+    .sm-blue { background: #1D4ED8; color: white; }
+    .sm-gray { background: white; color: #374151; border: 1px solid #E5E7EB; }
+    .sm-red  { background: white; color: #DC2626; border: 1px solid #FECACA; font-size: 11px; padding: 5px 10px; }
+
+    @media (max-width: 720px) {
+      .adm-wrap { grid-template-columns: 1fr; }
+      .add-form { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ================================================================
+  SETUP VIEW (shown if Firebase not configured)
+================================================================ -->
+<div id="view-setup" class="hidden">
+  <div class="setup-inner">
+    <p class="setup-tag">SETUP REQUIRED</p>
+    <h1 class="setup-h">Configure your Firebase database</h1>
+    <p class="setup-p">This app needs a free Firebase Realtime Database to store employee data across all devices. It takes about 5 minutes to set up.</p>
+    <ol class="setup-steps">
+      <li>Go to <strong>console.firebase.google.com</strong> and sign in with a Google account.</li>
+      <li>Click <strong>"Add project"</strong> → give it a name → disable analytics → click Create.</li>
+      <li>In the left sidebar click <strong>Build → Realtime Database → Create database → Start in test mode → Enable.</strong></li>
+      <li>Copy your database URL — it looks like: <code>https://your-project-default-rtdb.firebaseio.com</code></li>
+      <li>Open this HTML file in a text editor and paste your URL into <code>FIREBASE_URL</code> at the top of the script.</li>
+      <li>Re-deploy to Vercel — done!</li>
+    </ol>
+    <a href="https://console.firebase.google.com" target="_blank" class="setup-link">Open Firebase Console →</a>
+  </div>
+</div>
+
+<!-- ================================================================
+  PORTAL VIEW (employee phone — opens when QR is scanned)
+================================================================ -->
+<div id="view-portal" class="hidden">
+  <div class="p-header">
+    <div class="co-name" id="portal-co-name">Company</div>
+  </div>
+  <div class="p-body">
+    <div class="p-form">
+      <h1 class="p-title">Hello 👋</h1>
+      <p class="p-sub">Enter your employee ID to check in or out</p>
+      <label class="f-label" for="eid-input">Employee ID</label>
+      <input type="text" id="eid-input" class="f-input" placeholder="EMP001"
+        autocomplete="off" autocorrect="off" autocapitalize="characters"
+        maxlength="12" oninput="onIdType(this.value)" />
+      <div id="emp-preview" class="emp-preview hidden">
+        <div class="ep-name" id="ep-name"></div>
+        <div class="ep-meta" id="ep-meta"></div>
+      </div>
+      <div id="emp-err" class="err-box hidden"></div>
+      <button id="go-btn" class="big-btn btn-blue" onclick="submitAction()">Continue</button>
+    </div>
+  </div>
+  <div class="p-footer">
+    <a href="#admin" class="admin-link">Admin panel →</a>
+  </div>
+</div>
+
+<!-- ================================================================
+  LOADING VIEW
+================================================================ -->
+<div id="view-loading" class="hidden">
+  <div class="spinner"></div>
+  <p class="load-txt">Please wait...</p>
+</div>
+
+<!-- ================================================================
+  SUCCESS VIEW (shown after check-in or check-out)
+================================================================ -->
+<div id="view-success" class="hidden">
+  <div class="succ-inner">
+    <div class="succ-ring" id="succ-ring"></div>
+    <h1 class="succ-h1" id="succ-h1"></h1>
+    <p class="succ-nm" id="succ-nm"></p>
+    <p class="succ-sub" id="succ-sub"></p>
+    <div class="succ-card" id="succ-card"></div>
+    <button class="big-btn btn-gray" style="margin-top:0" onclick="resetPortal()">Done</button>
+    <p class="auto-note">Resets in <span id="countdown">8</span>s</p>
+  </div>
+</div>
+
+<!-- ================================================================
+  ADMIN VIEW
+================================================================ -->
+<div id="view-admin" class="hidden">
+  <div class="adm-bar">
+    <div class="adm-brand">
+      <div class="brand-icon">A</div>
+      <span class="brand-name" id="admin-co-name">Company</span>
+      <span class="brand-badge">Admin</span>
+    </div>
+    <span class="adm-clock" id="adm-clk"></span>
+  </div>
+
+  <div class="adm-wrap">
+    <!-- Left column: QR + stats -->
+    <div>
+      <div class="adm-card">
+        <div class="qr-panel">
+          <p class="qr-label">EMPLOYEE ENTRY QR CODE</p>
+          <div class="qr-frame">
+            <img id="qr-img" src="" width="180" height="180" alt="Check-in QR Code" />
+          </div>
+          <span class="qr-url-chip" id="qr-url-label"></span>
+          <p class="qr-hint">Display this at your office entrance</p>
+          <a id="portal-open-link" href="" class="portal-btn-link" target="_blank">Open employee portal ↗</a>
+        </div>
+      </div>
+
+      <div class="stat-row">
+        <div class="stat-box s-green">
+          <div class="stat-n" id="stat-in">0</div>
+          <div class="stat-l">Currently in</div>
+        </div>
+        <div class="stat-box s-blue">
+          <div class="stat-n" id="stat-total">0</div>
+          <div class="stat-l">Total staff</div>
+        </div>
+      </div>
+
+      <p class="refresh-note">Auto-refreshes every 10s</p>
+    </div>
+
+    <!-- Right column: tabs -->
+    <div>
+      <div class="adm-card">
+        <div class="tab-nav">
+          <button class="t-btn on" id="tb-sessions" onclick="setTab('sessions')">Active now</button>
+          <button class="t-btn" id="tb-log"      onclick="setTab('log')">Today's log</button>
+          <button class="t-btn" id="tb-employees" onclick="setTab('employees')">Employees</button>
+        </div>
+        <div class="t-body" id="tab-body"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =================================================================
+   CONFIGURATION — Edit these two lines before deploying
+   ================================================================= */
+const COMPANY_NAME  = 'Zanooch';
+const FIREBASE_URL  = 'https://console.firebase.google.com/u/0/project/zanooch/database/zanooch-default-rtdb/data/~2F';
+
+/*
+  HOW TO GET YOUR FIREBASE URL (free, takes ~5 min)
+  --------------------------------------------------
+  1. Go to https://console.firebase.google.com and sign in.
+  2. Click "Add project" → name it → disable analytics → Create.
+  3. Left sidebar: Build → Realtime Database → Create database
+     → choose your region → "Start in test mode" → Enable.
+  4. Copy the database URL shown (e.g. https://my-app-default-rtdb.firebaseio.com)
+  5. Paste it above where it says FIREBASE_URL.
+  6. Change COMPANY_NAME to your company's name.
+  7. Deploy this file to Vercel (drag & drop at vercel.com).
+  8. Visit yourapp.vercel.app#admin to see the QR code.
+  9. Display the QR code at your entrance — done!
+*/
+
+/* =================================================================
+   Firebase REST API helpers (no SDK needed)
+   ================================================================= */
+async function fbGet(path) {
+  const r = await fetch(`${FIREBASE_URL}/${path}.json`);
+  if (!r.ok) throw new Error('Firebase read failed: ' + r.status);
+  return r.json();
+}
+
+async function fbSet(path, data) {
+  const r = await fetch(`${FIREBASE_URL}/${path}.json`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  if (!r.ok) throw new Error('Firebase write failed: ' + r.status);
+}
+
+async function fbDel(path) {
+  await fetch(`${FIREBASE_URL}/${path}.json`, { method: 'DELETE' });
+}
+
+/* =================================================================
+   App state
+   ================================================================= */
+let ST = {
+  employees: {},
+  sessions:  {},
+  log:       {},
+  tab:       'sessions',
+  countdown: null,
+  pollTimer: null,
+};
+
+/* =================================================================
+   Utilities
+   ================================================================= */
+const $  = id => document.getElementById(id);
+const ft = d  => d.toLocaleTimeString('en-US', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+const fd = d  => d.toLocaleDateString('en-US',  { weekday:'short', month:'short', day:'numeric', year:'numeric' });
+const nT = () => ft(new Date());
+const nD = () => fd(new Date());
+const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+function showView(id) {
+  ['view-portal','view-loading','view-success','view-admin','view-setup']
+    .forEach(v => $(v).classList.toggle('hidden', v !== id));
+}
+
+function isConfigured() {
+  return !FIREBASE_URL.includes('YOUR-PROJECT-ID');
+}
+
+/* =================================================================
+   ROUTING
+   ================================================================= */
+function route() {
+  document.title = COMPANY_NAME + ' — Attendance';
+  $('portal-co-name').textContent = COMPANY_NAME;
+  $('admin-co-name').textContent  = COMPANY_NAME;
+
+  if (!isConfigured()) {
+    showView('view-setup');
+    return;
+  }
+
+  if (window.location.hash === '#admin') {
+    initAdmin();
+  } else {
+    showView('view-portal');
+    setTimeout(() => { const i=$('eid-input'); if(i) i.focus(); }, 100);
+  }
+}
+
+window.addEventListener('hashchange', route);
+window.addEventListener('DOMContentLoaded', route);
+
+/* =================================================================
+   PORTAL — Employee check-in / check-out
+   ================================================================= */
+let idTimer = null;
+
+function onIdType(val) {
+  clearTimeout(idTimer);
+  $('emp-preview').classList.add('hidden');
+  $('emp-err').classList.add('hidden');
+  $('go-btn').className = 'big-btn btn-blue';
+  $('go-btn').textContent = 'Continue';
+
+  const id = val.trim().toUpperCase();
+  if (id.length < 3) return;
+
+  idTimer = setTimeout(() => previewEmployee(id), 450);
+}
+
+async function previewEmployee(id) {
+  try {
+    const emp = await fbGet('att/employees/' + id);
+    if (!emp) return;
+
+    const session = await fbGet('att/sessions/' + id);
+    $('ep-name').textContent = '👤 ' + emp.name;
+    const preview = $('emp-preview');
+    preview.classList.remove('hidden');
+
+    if (session) {
+      $('ep-meta').textContent = emp.dept + ' · Checked in at ' + session.time;
+      $('go-btn').textContent  = 'Check out — ' + emp.name;
+      $('go-btn').className    = 'big-btn btn-red';
+    } else {
+      $('ep-meta').textContent = emp.dept + ' · Not checked in';
+      $('go-btn').textContent  = 'Check in — ' + emp.name;
+      $('go-btn').className    = 'big-btn btn-green';
+    }
+  } catch(e) { /* silent — just don't preview */ }
+}
+
+async function submitAction() {
+  const id = ($('eid-input').value || '').trim().toUpperCase();
+  if (!id) { showPortalErr('Enter your employee ID to continue.'); return; }
+
+  showView('view-loading');
+
+  try {
+    const emp = await fbGet('att/employees/' + id);
+
+    if (!emp) {
+      showView('view-portal');
+      showPortalErr('Employee not found. Double-check your ID and try again.');
+      return;
+    }
+
+    const t = nT(), d = nD();
+    const session = await fbGet('att/sessions/' + id);
+
+    if (session) {
+      /* — CHECKOUT — */
+      await fbSet('att/log/' + Date.now(), {
+        empId: id, name: emp.name, dept: emp.dept,
+        date: d, checkin: session.time, checkout: t, type: 'out',
+      });
+      await fbDel('att/sessions/' + id);
+      showSuccess('out', emp.name, emp.dept, t, session.time);
+
+    } else {
+      /* — CHECKIN — */
+      await fbSet('att/sessions/' + id, { name: emp.name, dept: emp.dept, time: t, date: d });
+      await fbSet('att/log/' + Date.now(), {
+        empId: id, name: emp.name, dept: emp.dept,
+        date: d, checkin: t, checkout: null, type: 'in',
+      });
+      showSuccess('in', emp.name, emp.dept, t, null);
+    }
+
+  } catch(e) {
+    showView('view-portal');
+    showPortalErr('Connection error. Check your internet and try again.');
+  }
+}
+
+function showPortalErr(msg) {
+  const el = $('emp-err');
+  el.textContent = msg;
+  el.classList.remove('hidden');
+}
+
+function showSuccess(type, name, dept, time, checkinTime) {
+  const isIn = type === 'in';
+  showView('view-success');
+
+  $('succ-ring').className = 'succ-ring ' + (isIn ? 'ring-in' : 'ring-out');
+  $('succ-ring').textContent = isIn ? '✓' : '✕';
+  $('succ-h1').textContent  = isIn ? 'Checked in!' : 'Checked out!';
+  $('succ-h1').style.color  = isIn ? '#059669' : '#DC2626';
+  $('succ-nm').textContent  = name;
+  $('succ-sub').textContent = dept + ' · ' + nD();
+
+  let rows = `
+    <div class="s-row"><span class="s-key">Time</span><span class="s-val">${esc(time)}</span></div>
+    <div class="s-row"><span class="s-key">Date</span><span class="s-val">${esc(nD())}</span></div>`;
+  if (!isIn && checkinTime) {
+    rows += `<div class="s-row"><span class="s-key">Session started</span><span class="s-val">${esc(checkinTime)}</span></div>`;
+  }
+  rows += `<div class="s-row"><span class="s-key">Status</span>
+    <span class="s-val" style="color:${isIn?'#059669':'#DC2626'}">${isIn?'CHECKED IN':'CHECKED OUT'}</span></div>`;
+  $('succ-card').innerHTML = rows;
+
+  /* Auto-reset countdown */
+  let secs = 8;
+  $('countdown').textContent = secs;
+  clearInterval(ST.countdown);
+  ST.countdown = setInterval(() => {
+    secs--;
+    $('countdown').textContent = secs;
+    if (secs <= 0) { clearInterval(ST.countdown); resetPortal(); }
+  }, 1000);
+}
+
+function resetPortal() {
+  clearInterval(ST.countdown);
+  $('eid-input').value = '';
+  $('emp-preview').classList.add('hidden');
+  $('emp-err').classList.add('hidden');
+  $('go-btn').className = 'big-btn btn-blue';
+  $('go-btn').textContent = 'Continue';
+  showView('view-portal');
+  setTimeout(() => { const i=$('eid-input'); if(i) i.focus(); }, 100);
+}
+
+/* =================================================================
+   ADMIN PANEL
+   ================================================================= */
+async function initAdmin() {
+  showView('view-admin');
+
+  /* QR code points to the portal (this page without #admin) */
+  const portalUrl = window.location.origin + window.location.pathname;
+  $('qr-img').src = 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&data='
+    + encodeURIComponent(portalUrl) + '&margin=8&color=0D1B3E';
+  $('qr-url-label').textContent    = portalUrl.replace('https://','');
+  $('portal-open-link').href        = portalUrl;
+
+  /* Live clock */
+  $('adm-clk').textContent = nT() + ' · ' + nD();
+  setInterval(() => { $('adm-clk').textContent = nT() + ' · ' + nD(); }, 1000);
+
+  /* Seed demo employees if database is empty */
+  try {
+    const emps = await fbGet('att/employees');
+    if (!emps) await seedDemoEmployees();
+  } catch(e) { /* fine */ }
+
+  /* First load */
+  await refreshAdminData();
+
+  /* Poll every 10 seconds */
+  clearInterval(ST.pollTimer);
+  ST.pollTimer = setInterval(refreshAdminData, 10000);
+}
+
+async function seedDemoEmployees() {
+  await fbSet('att/employees', {
+    'EMP001': { name: 'Ahmed Khan',    dept: 'Engineering' },
+    'EMP002': { name: 'Sara Ali',      dept: 'Marketing'   },
+    'EMP003': { name: 'Omar Hassan',   dept: 'Sales'       },
+    'EMP004': { name: 'Fatima Malik',  dept: 'HR'          },
+  });
+}
+
+async function refreshAdminData() {
+  try {
+    const [employees, sessions, log] = await Promise.all([
+      fbGet('att/employees'),
+      fbGet('att/sessions'),
+      fbGet('att/log'),
+    ]);
+    ST.employees = employees || {};
+    ST.sessions  = sessions  || {};
+    ST.log       = log       || {};
+
+    $('stat-in').textContent    = Object.keys(ST.sessions).length;
+    $('stat-total').textContent  = Object.keys(ST.employees).length;
+
+    renderTab();
+  } catch(e) {
+    console.error('Admin refresh error', e);
+  }
+}
+
+/* Tabs */
+function setTab(t) {
+  ST.tab = t;
+  ['sessions','log','employees'].forEach(k => {
+    $('tb-' + k).classList.toggle('on', k === t);
+  });
+  renderTab();
+}
+
+function renderTab() {
+  const body = $('tab-body');
+  if (!body) return;
+  if      (ST.tab === 'sessions')  body.innerHTML = buildSessions();
+  else if (ST.tab === 'log')       body.innerHTML = buildLog();
+  else                             body.innerHTML = buildEmployees();
+}
+
+function buildSessions() {
+  const rows = Object.entries(ST.sessions);
+  if (!rows.length) return '<div class="empty-state">No employees are checked in right now.</div>';
+  return `<table class="tbl">
+    <thead><tr><th>Name</th><th>Department</th><th>Checked in at</th><th>Status</th></tr></thead>
+    <tbody>
+    ${rows.map(([id, d]) => `<tr>
+      <td>${esc(d.name)}</td>
+      <td>${esc(d.dept)}</td>
+      <td style="color:#059669">${esc(d.time)}</td>
+      <td><span class="bdg b-in">IN</span></td>
+    </tr>`).join('')}
+    </tbody></table>`;
+}
+
+function buildLog() {
+  const today = nD();
+  const entries = Object.values(ST.log)
+    .filter(e => e.date === today)
+    .sort((a, b) => (b.checkin > a.checkin ? 1 : -1));
+
+  if (!entries.length) return '<div class="empty-state">No activity logged today yet.</div>';
+
+  return `<table class="tbl">
+    <thead><tr><th>Name</th><th>Dept</th><th>Check in</th><th>Check out</th><th>Status</th></tr></thead>
+    <tbody>
+    ${entries.map(e => `<tr>
+      <td>${esc(e.name)}</td>
+      <td>${esc(e.dept)}</td>
+      <td style="color:#059669">${esc(e.checkin)}</td>
+      <td style="color:${e.checkout ? '#DC2626' : '#9CA3AF'}">${e.checkout ? esc(e.checkout) : '—'}</td>
+      <td><span class="bdg ${e.checkout ? 'b-out' : 'b-in'}">${e.checkout ? 'OUT' : 'IN'}</span></td>
+    </tr>`).join('')}
+    </tbody></table>`;
+}
+
+function buildEmployees() {
+  const emps = Object.entries(ST.employees);
+  return `
+  <div class="add-bar">
+    <h3>All employees (${emps.length})</h3>
+    <button class="sm-btn sm-gray" onclick="toggleAddForm()">+ Add employee</button>
+  </div>
+  <div class="add-form" id="add-form">
+    <input class="mi" id="n-id"   placeholder="EMP005" />
+    <input class="mi" id="n-name" placeholder="Full name" />
+    <input class="mi" id="n-dept" placeholder="Department" />
+    <button class="sm-btn sm-blue" onclick="addEmployee()">Save</button>
+  </div>
+  <table class="tbl">
+    <thead><tr><th>ID</th><th>Name</th><th>Department</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+    ${emps.map(([id, e]) => `<tr>
+      <td style="font-family:monospace;font-size:12px;color:#6B7280">${esc(id)}</td>
+      <td>${esc(e.name)}</td>
+      <td>${esc(e.dept)}</td>
+      <td><span class="bdg ${ST.sessions[id] ? 'b-in' : 'b-off'}">${ST.sessions[id] ? 'IN' : 'OUT'}</span></td>
+      <td><button class="sm-btn sm-red" onclick="removeEmployee('${esc(id)}')">Remove</button></td>
+    </tr>`).join('')}
+    </tbody>
+  </table>`;
+}
+
+function toggleAddForm() {
+  const f = $('add-form');
+  if (!f) return;
+  f.style.display = f.style.display === 'grid' ? 'none' : 'grid';
+}
+
+async function addEmployee() {
+  const id   = ($('n-id').value   || '').trim().toUpperCase();
+  const name = ($('n-name').value || '').trim();
+  const dept = ($('n-dept').value || '').trim() || 'General';
+
+  if (!id || !name) { alert('Enter both an ID and a name.'); return; }
+  if (ST.employees[id]) { alert('An employee with that ID already exists.'); return; }
+
+  try {
+    await fbSet('att/employees/' + id, { name, dept });
+    $('n-id').value = $('n-name').value = $('n-dept').value = '';
+    $('add-form').style.display = 'none';
+    await refreshAdminData();
+  } catch(e) {
+    alert('Failed to save. Check your internet connection.');
+  }
+}
+
+async function removeEmployee(id) {
+  const emp = ST.employees[id];
+  if (!emp) return;
+  if (!confirm(`Remove ${emp.name}? This cannot be undone.`)) return;
+  try {
+    await fbDel('att/employees/' + id);
+    await fbDel('att/sessions/'  + id);
+    await refreshAdminData();
+  } catch(e) {
+    alert('Failed to remove employee.');
+  }
+}
+</script>
+</body>
+</html>
